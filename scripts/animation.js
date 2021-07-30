@@ -18,7 +18,7 @@ function draw() {
         y: 0,
     };
 
-    let testRect = {
+    let rectangle = {
         x: 100,
         y: 100,
         width: 100,
@@ -31,6 +31,40 @@ function draw() {
         }
     };
 
+    render();
+
+    canvas.addEventListener('mousemove', function (e) {
+        mousePos.x = e.clientX;
+        mousePos.y = e.clientY;
+
+        if (e.buttons == 1) {
+            draging = true;
+
+            rectangle.x = mousePos.x - mouseOffset.x;
+            rectangle.y = mousePos.y - mouseOffset.y;
+        } else {
+            draging = false;
+
+            mouseOffset.x = mousePos.x - rectangle.x;
+            mouseOffset.y = mousePos.y - rectangle.y;
+        }
+
+        render();
+    });
+
+    canvas.addEventListener('wheel', function (e) {
+        rectangle.width += e.deltaY * 0.1;
+        rectangle.height += e.deltaY * 0.1;
+
+        render();
+    });
+
+    function render() {
+        clear();
+        drawLog();
+        rectangle.draw();
+    }
+
     function drawLog() {
         ctx.fillStyle = "rgba(0, 0, 0, 1)";
 
@@ -38,37 +72,13 @@ function draw() {
         ctx.font = `${fontSize}px courier`;
 
         ctx.fillText(`${draging ? "Draging" : "Not draging"}`, 10, fontSize);
-        ctx.fillText(`Mouse position:       [${mousePos.x}, ${mousePos.y}]`, 10, fontSize * 2);
-        ctx.fillText(`Rectangular position: [${testRect.x}, ${testRect.y}]`, 10, fontSize * 3);
-        ctx.fillText(`Mouse offset:         [${mouseOffset.x}, ${mouseOffset.y}]`, 10, fontSize * 4);
+        ctx.fillText(`Mouse position:     [${mousePos.x}, ${mousePos.y}]`, 10, fontSize * 2);
+        ctx.fillText(`Rectangle position: [${rectangle.x}, ${rectangle.y}]`, 10, fontSize * 3);
+        ctx.fillText(`Mouse offset:       [${mouseOffset.x}, ${mouseOffset.y}]`, 10, fontSize * 4);
+        ctx.fillText(`Rectangle size:     [${rectangle.width} x ${rectangle.height}]`, 10, fontSize * 5);
     };
 
     function clear() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     };
-
-    canvas.addEventListener('mousemove', function (e) {
-        mousePos.x = e.clientX;
-        mousePos.y = e.clientY;
-
-        clear();
-        drawLog();
-
-        if (e.buttons == 1) {
-            draging = true;
-
-            testRect.x = mousePos.x - mouseOffset.x;
-            testRect.y = mousePos.y - mouseOffset.y;
-        } else {
-            draging = false;
-
-            mouseOffset.x = mousePos.x - testRect.x;
-            mouseOffset.y = mousePos.y - testRect.y;
-        }
-
-        testRect.draw();
-    });
-
-    drawLog();
-    testRect.draw();
 }
