@@ -2,7 +2,7 @@
 
 function draw() {
     let canvas = document.getElementById("canvas");
-
+   
     if (!canvas.getContext) { return }; // Canvas support check
 
     let ctx = canvas.getContext("2d");
@@ -33,6 +33,10 @@ function draw() {
 
     render();
 
+    window.addEventListener('resize', function () {
+        render();
+    });
+
     canvas.addEventListener('mousemove', function (e) {
         mousePos.x = e.clientX;
         mousePos.y = e.clientY;
@@ -60,7 +64,7 @@ function draw() {
     });
 
     function render() {
-        clear();
+        prepareCanvas();
         drawLog();
         rectangle.draw();
     }
@@ -76,9 +80,13 @@ function draw() {
         ctx.fillText(`Rectangle position: [${rectangle.x}, ${rectangle.y}]`, 10, fontSize * 3);
         ctx.fillText(`Mouse offset:       [${mouseOffset.x}, ${mouseOffset.y}]`, 10, fontSize * 4);
         ctx.fillText(`Rectangle size:     [${rectangle.width} x ${rectangle.height}]`, 10, fontSize * 5);
+        ctx.fillText(`Window size:        [${document.documentElement.clientWidth} x ${document.documentElement.clientHeight}]`, 10, fontSize * 6);
     };
 
-    function clear() {
+    function prepareCanvas() {
+        canvas.width = document.documentElement.clientWidth - 16;
+        canvas.height = document.documentElement.clientHeight - 20;
+
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     };
 }
