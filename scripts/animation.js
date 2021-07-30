@@ -7,13 +7,15 @@ function draw() {
 
     let ctx = canvas.getContext("2d");
     let draging = false;
+
     let mousePos = {
         x: undefined,
         y: undefined,
     };
+
     let mouseOffset = {
-        x: undefined,
-        y: undefined,
+        x: 0,
+        y: 0,
     };
 
     let testRect = {
@@ -38,6 +40,7 @@ function draw() {
         ctx.fillText(`${draging ? "Draging" : "Not draging"}`, 10, fontSize);
         ctx.fillText(`Mouse position:       [${mousePos.x}, ${mousePos.y}]`, 10, fontSize * 2);
         ctx.fillText(`Rectangular position: [${testRect.x}, ${testRect.y}]`, 10, fontSize * 3);
+        ctx.fillText(`Mouse offset:         [${mouseOffset.x}, ${mouseOffset.y}]`, 10, fontSize * 4);
     };
 
     function clear() {
@@ -51,21 +54,19 @@ function draw() {
         clear();
         drawLog();
 
-        if (draging) {
-            testRect.x = mousePos.x + mouseOffset.x;
-            testRect.y = mousePos.y + mouseOffset.y;
+        if (e.buttons == 1) {
+            draging = true;
+
+            testRect.x = mousePos.x - mouseOffset.x;
+            testRect.y = mousePos.y - mouseOffset.y;
+        } else {
+            draging = false;
+
+            mouseOffset.x = mousePos.x - testRect.x;
+            mouseOffset.y = mousePos.y - testRect.y;
         }
 
         testRect.draw();
-    });
-
-    canvas.addEventListener('click', function (e) {
-        draging = !draging;
-
-        if (draging == true) {
-            mouseOffset.x = testRect.x - mousePos.x;
-            mouseOffset.y = testRect.y - mousePos.y;
-        }
     });
 
     drawLog();
