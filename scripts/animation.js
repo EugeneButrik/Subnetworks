@@ -60,7 +60,6 @@ function draw() {
 
     canvas.addEventListener('wheel', function (e) {
         rectangle.y += e.deltaY / Math.abs(e.deltaY) * rectangle.height;
-        // Both prior values need to be rounded due to precision loss (found in Firefox)
 
         render();
     });
