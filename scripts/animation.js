@@ -1,5 +1,7 @@
 `use strict`;
 
+let DEBUG = 1;
+
 function draw() {
     let canvas = document.getElementById("canvas");
 
@@ -21,8 +23,8 @@ function draw() {
     let rectangle = {
         x: 100,
         y: 100,
-        width: 100,
-        height: 100,
+        width: 200,
+        height: 200,
         color: "rgba(200, 0, 0, 0.5)",
 
         draw: function () {
@@ -34,35 +36,109 @@ function draw() {
     resizeCanvas();
     render();
 
-    window.addEventListener('resize', function () {
+    window.onresize = function (e) {
         resizeCanvas();
-        render();
-    });
 
-    canvas.addEventListener('mousemove', function (e) {
+        if (DEBUG) {console.log(`window 'resize' event occured`)};
+
+        render();
+    };
+
+    window.oncontextmenu = function (e) {
+        e.preventDefault();
+
+        if (DEBUG) {console.log(`window 'oncontextmenu' event occured`)};
+
+        render();
+    };
+
+    canvas.onmousedown = function (e) {
+        e.preventDefault();
+
+        draging = true;
+
+        mouseOffset.x = e.clientX - rectangle.x;
+        mouseOffset.y = e.clientY - rectangle.y;
+
+        if (DEBUG) {console.log(`'mousedown' event occured`)};
+
+        render();
+    };
+
+    canvas.onmouseup = function (e) {
+        e.preventDefault();
+
+        draging = false;
+
+        if (DEBUG) {console.log(`'mouseup' event occured`)};
+
+        render();
+    };
+
+    canvas.onmousemove = function (e) {
+        e.preventDefault();
+
         mousePos.x = e.clientX;
         mousePos.y = e.clientY;
 
-        if (e.buttons == 1) {
-            draging = true;
-
+        if (draging) {
             rectangle.x = mousePos.x - mouseOffset.x;
             rectangle.y = mousePos.y - mouseOffset.y;
-        } else {
-            draging = false;
+        };
 
-            mouseOffset.x = mousePos.x - rectangle.x;
-            mouseOffset.y = mousePos.y - rectangle.y;
-        }
+        if (DEBUG) {console.log(`'mousemove' event occured`)};
 
         render();
-    });
+    }
 
-    canvas.addEventListener('wheel', function (e) {
+    canvas.onwheel = function (e) {
+        e.preventDefault();
+
         rectangle.y += e.deltaY / Math.abs(e.deltaY) * rectangle.height;
 
+        if (DEBUG) {console.log(`'wheel' event occured`)};
+
         render();
-    });
+    };
+
+    canvas.ontouchstart = function (e) {
+        e.preventDefault();
+
+        draging = true;
+
+        mouseOffset.x = e.touches[0].clientX - rectangle.x;
+        mouseOffset.y = e.touches[0].clientY - rectangle.y;
+
+        if (DEBUG) {console.log(`'touchstart' event occured`)};
+
+        render();
+    };
+
+    canvas.ontouchend = function (e) {
+        e.preventDefault();
+
+        draging = false;
+
+        if (DEBUG) {console.log(`'touchend' event occured`)};
+
+        render();
+    };
+
+    canvas.ontouchmove = function (e) {
+        e.preventDefault();
+
+        mousePos.x = e.touches[0].clientX;
+        mousePos.y = e.touches[0].clientY;
+
+        if (draging) {
+            rectangle.x = mousePos.x - mouseOffset.x;
+            rectangle.y = mousePos.y - mouseOffset.y;
+        }
+
+        if (DEBUG) {console.log(`'touchmove' event occured`)};
+
+        render();
+    };
 
     function render() {
         clearCanvas();
@@ -71,9 +147,9 @@ function draw() {
     };
 
     function drawLog() {
-        ctx.fillStyle = "rgba(0, 0, 0, 1)";
-
         let fontSize = 24;
+
+        ctx.fillStyle = "rgba(0, 0, 0, 1)";
         ctx.font = `${fontSize}px courier`;
 
         ctx.fillText(`${draging ? "Draging" : "Not draging"}`, 10, fontSize);
