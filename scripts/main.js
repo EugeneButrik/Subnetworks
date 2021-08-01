@@ -20,26 +20,29 @@ let state = {
     draging: false,
 
     mousePos: {
-        x: undefined,
-        y: undefined,
+        h: undefined,
+        v: undefined,
     },
 
     mouseOffset: {
-        x: undefined,
-        y: undefined,
+        h: undefined,
+        v: undefined,
     },
 };
 
-let rectangle = {
-    x: 100,
-    y: 100,
+let subnet = {
+    position: {
+        h: 100,
+        v: 100,
+    },
+
     width: 200,
     height: 200,
     color: "rgba(200, 0, 0, 0.5)",
 
     draw: function () {
         canvas.context.fillStyle = this.color;
-        canvas.context.fillRect(this.x, this.y, this.width, this.height);
+        canvas.context.fillRect(this.position.h, this.position.v, this.width, this.height);
     }
 };
 
@@ -57,7 +60,7 @@ window.onresize = function (e) {
 
 window.oncontextmenu = function (e) {
     if (DEBUG) { console.log(`window 'oncontextmenu' event occured`) };
-    
+
     e.preventDefault();
 
     render();
@@ -70,15 +73,15 @@ canvas.element.onmousedown = function (e) {
 
     state.draging = true;
 
-    state.mouseOffset.x = e.clientX - rectangle.x;
-    state.mouseOffset.y = e.clientY - rectangle.y;
+    state.mouseOffset.h = e.clientX - subnet.position.h;
+    state.mouseOffset.v = e.clientY - subnet.position.v;
 
     render();
 };
 
 canvas.element.onmouseup = function (e) {
     if (DEBUG) { console.log(`'mouseup' event occured`) };
-    
+
     e.preventDefault();
 
     state.draging = false;
@@ -88,46 +91,58 @@ canvas.element.onmouseup = function (e) {
 
 canvas.element.onmousemove = function (e) {
     if (DEBUG) { console.log(`'mousemove' event occured`) };
-    
+
     e.preventDefault();
 
-    state.mousePos.x = e.clientX;
-    state.mousePos.y = e.clientY;
+    state.draging = (e.buttons != 0);
+
+    state.mousePos.h = e.clientX;
+    state.mousePos.v = e.clientY;
 
     if (state.draging) {
-        rectangle.x = state.mousePos.x - state.mouseOffset.x;
-        rectangle.y = state.mousePos.y - state.mouseOffset.y;
+        subnet.position.h = state.mousePos.h - state.mouseOffset.h;
+        subnet.position.v = state.mousePos.v - state.mouseOffset.v;
     };
+
+    render();
+}
+
+canvas.element.onmouseleave = function (e) {
+    if (DEBUG) { console.log(`'mouseleave' event occured`) };
+
+    e.preventDefault();
+
+    state.draging = false;
 
     render();
 }
 
 canvas.element.onwheel = function (e) {
     if (DEBUG) { console.log(`'wheel' event occured`) };
-    
+
     e.preventDefault();
 
-    rectangle.y += e.deltaY / Math.abs(e.deltaY) * rectangle.height;
+    subnet.position.v += e.deltaY / Math.abs(e.deltaY) * subnet.height;
 
     render();
 };
 
 canvas.element.ontouchstart = function (e) {
     if (DEBUG) { console.log(`'touchstart' event occured`) };
-    
+
     e.preventDefault();
 
     state.draging = true;
 
-    state.mouseOffset.x = e.touches[0].clientX - rectangle.x;
-    state.mouseOffset.y = e.touches[0].clientY - rectangle.y;
+    state.mouseOffset.h = e.touches[0].clientX - subnet.position.h;
+    state.mouseOffset.v = e.touches[0].clientY - subnet.position.v;
 
     render();
 };
 
 canvas.element.ontouchend = function (e) {
     if (DEBUG) { console.log(`'touchend' event occured`) };
-    
+
     e.preventDefault();
 
     state.draging = false;
@@ -137,15 +152,15 @@ canvas.element.ontouchend = function (e) {
 
 canvas.element.ontouchmove = function (e) {
     if (DEBUG) { console.log(`'touchmove' event occured`) };
-    
+
     e.preventDefault();
 
-    state.mousePos.x = e.touches[0].clientX;
-    state.mousePos.y = e.touches[0].clientY;
+    state.mousePos.h = e.touches[0].clientX;
+    state.mousePos.v = e.touches[0].clientY;
 
     if (state.draging) {
-        rectangle.x = state.mousePos.x - state.mouseOffset.x;
-        rectangle.y = state.mousePos.y - state.mouseOffset.y;
+        subnet.position.h = state.mousePos.h - state.mouseOffset.h;
+        subnet.position.v = state.mousePos.v - state.mouseOffset.v;
     }
 
     render();
@@ -156,7 +171,7 @@ canvas.element.ontouchmove = function (e) {
 function render() {
     canvas.clear();
     drawLog();
-    rectangle.draw();
+    subnet.draw();
 };
 
 function drawLog() {
@@ -168,17 +183,17 @@ function drawLog() {
     canvas.context.fillText(`${state.draging ? "Draging" : "Not draging"}`, 10, fontSize);
     canvas.context.fillText(
         `Mouse position:    ` +
-        `[${state.mousePos.x}, ${state.mousePos.y}]`,
+        `[${state.mousePos.h}, ${state.mousePos.v}]`,
         10, fontSize * 2
     );
     canvas.context.fillText(
         `Rectangle position:` +
-        `[${rectangle.x}, ${rectangle.y}]`,
+        `[${subnet.position.h}, ${subnet.position.v}]`,
         10, fontSize * 3
     );
     canvas.context.fillText(
         `Mouse offset:      ` +
-        `[${state.mouseOffset.x}, ${state.mouseOffset.y}]`,
+        `[${state.mouseOffset.h}, ${state.mouseOffset.v}]`,
         10, fontSize * 4
     );
     canvas.context.fillText(
