@@ -17,14 +17,19 @@ let canvas = {
 };
 
 let state = {
-    draging: false,
+    panning: false,
 
-    mousePos: {
+    pointerOnScreenPosition: {
         h: undefined,
         v: undefined,
     },
 
-    mouseOffset: {
+    panOffset: {
+        h: undefined,
+        v: undefined,
+    },
+
+    spaceOriginOnScreenPosition: {
         h: undefined,
         v: undefined,
     },
@@ -32,16 +37,21 @@ let state = {
 
 let subnet = {
     position: {
-        h: 100,
-        v: 100,
+        h: 0,
+        v: 0,
     },
 
     width: 200,
     height: 200,
+
     color: "rgba(200, 0, 0, 0.5)",
 
     draw: function () {
+        this.position.h = state.spaceOriginOnScreenPosition.h - this.width / 2;
+        this.position.v = state.spaceOriginOnScreenPosition.v - this.height / 2;
+
         canvas.context.fillStyle = this.color;
+
         canvas.context.fillRect(this.position.h, this.position.v, this.width, this.height);
     }
 };
@@ -49,122 +59,137 @@ let subnet = {
 
 
 canvas.resize();
+
+state.spaceOriginOnScreenPosition.h = +((canvas.element.width / 2).toFixed());
+state.spaceOriginOnScreenPosition.v = +((canvas.element.height / 2).toFixed());
+
 render();
 
-window.onresize = function (e) {
+
+
+window.addEventListener('resize', function (e) {
     if (DEBUG) { console.log(`window 'resize' event occured`) };
 
     canvas.resize();
-    render();
-};
 
-window.oncontextmenu = function (e) {
-    if (DEBUG) { console.log(`window 'oncontextmenu' event occured`) };
+    render();
+}, false);
+
+window.addEventListener('contextmenu', function (e) {
+    if (DEBUG) { console.log(`window 'contextmenu' event occured`) };
 
     e.preventDefault();
 
     render();
-};
+}, false);
 
-canvas.element.onmousedown = function (e) {
+window.addEventListener('mousedown', function (e) {
     if (DEBUG) { console.log(`'mousedown' event occured`) };
-
+    
     e.preventDefault();
-
-    state.draging = true;
-
-    state.mouseOffset.h = e.clientX - subnet.position.h;
-    state.mouseOffset.v = e.clientY - subnet.position.v;
-
+    
+    state.panning = true;
+    
+    state.panOffset.h = int(e.clientX - state.spaceOriginOnScreenPosition.h);
+    state.panOffset.v = int(e.clientY - state.spaceOriginOnScreenPosition.v);
+    
     render();
-};
+}, false);
 
-canvas.element.onmouseup = function (e) {
+window.addEventListener('mouseup', function (e) {
     if (DEBUG) { console.log(`'mouseup' event occured`) };
 
     e.preventDefault();
 
-    state.draging = false;
+    state.panning = false;
 
     render();
-};
+}, false);
 
-canvas.element.onmousemove = function (e) {
+window.addEventListener('mousemove', function (e) {
     if (DEBUG) { console.log(`'mousemove' event occured`) };
 
     e.preventDefault();
 
-    state.draging = (e.buttons != 0);
+    state.pointerOnScreenPosition.h = int(e.clientX);
+    state.pointerOnScreenPosition.v = int(e.clientY);
 
-    state.mousePos.h = e.clientX;
-    state.mousePos.v = e.clientY;
+    if (e.buttons == 0) {
+        state.panning = false;
+    } else {
+        state.panning = true;
+    };
 
-    if (state.draging) {
-        subnet.position.h = state.mousePos.h - state.mouseOffset.h;
-        subnet.position.v = state.mousePos.v - state.mouseOffset.v;
+    if (state.panning) {
+        state.spaceOriginOnScreenPosition.h =
+            state.pointerOnScreenPosition.h - state.panOffset.h;
+
+        state.spaceOriginOnScreenPosition.v =
+            state.pointerOnScreenPosition.v - state.panOffset.v;
     };
 
     render();
-}
+}, false);
 
-canvas.element.onmouseleave = function (e) {
-    if (DEBUG) { console.log(`'mouseleave' event occured`) };
-
-    e.preventDefault();
-
-    state.draging = false;
-
-    render();
-}
-
-canvas.element.onwheel = function (e) {
+canvas.element.addEventListener('wheel', function (e) {
+    /*
+    This event listener can not to be added to window because in that case it is
+    "Unable to preventDefault inside passive event listener
+    due to target being treated as passive" (Google Chrome).
+    So preventDefault() method can't be called and browser can handle mouse wheel events,
+    e.g. zooming with Ctrl key pressed.
+    */
     if (DEBUG) { console.log(`'wheel' event occured`) };
 
     e.preventDefault();
 
-    subnet.position.v += e.deltaY / Math.abs(e.deltaY) * subnet.height;
+    state.spaceOriginOnScreenPosition.v += int(e.deltaY / Math.abs(e.deltaY) * subnet.height);
 
     render();
-};
+}, false);
 
-canvas.element.ontouchstart = function (e) {
+canvas.element.addEventListener('touchstart', function (e) {
     if (DEBUG) { console.log(`'touchstart' event occured`) };
 
     e.preventDefault();
 
-    state.draging = true;
+    state.panning = true;
 
-    state.mouseOffset.h = e.touches[0].clientX - subnet.position.h;
-    state.mouseOffset.v = e.touches[0].clientY - subnet.position.v;
+    state.panOffset.h =
+        int(e.touches[0].clientX - state.spaceOriginOnScreenPosition.h);
+    state.panOffset.v =
+        int(e.touches[0].clientY - state.spaceOriginOnScreenPosition.v);
 
     render();
-};
+}, true);
 
-canvas.element.ontouchend = function (e) {
+canvas.element.addEventListener('touchend', function (e) {
     if (DEBUG) { console.log(`'touchend' event occured`) };
 
     e.preventDefault();
 
-    state.draging = false;
+    state.panning = false;
 
     render();
-};
+}, false);
 
-canvas.element.ontouchmove = function (e) {
+canvas.element.addEventListener('touchmove', function (e) {
     if (DEBUG) { console.log(`'touchmove' event occured`) };
 
     e.preventDefault();
 
-    state.mousePos.h = e.touches[0].clientX;
-    state.mousePos.v = e.touches[0].clientY;
+    state.pointerOnScreenPosition.h = int(e.touches[0].clientX);
+    state.pointerOnScreenPosition.v = int(e.touches[0].clientY);
 
-    if (state.draging) {
-        subnet.position.h = state.mousePos.h - state.mouseOffset.h;
-        subnet.position.v = state.mousePos.v - state.mouseOffset.v;
+    if (state.panning) {
+        state.spaceOriginOnScreenPosition.h =
+            state.pointerOnScreenPosition.h - state.panOffset.h;
+        state.spaceOriginOnScreenPosition.v =
+            state.pointerOnScreenPosition.v - state.panOffset.v;
     }
 
     render();
-};
+}, false);
 
 
 
@@ -174,33 +199,30 @@ function render() {
     subnet.draw();
 };
 
+function int(number) {
+    return +(number.toFixed());
+};
+
 function drawLog() {
     let fontSize = 24;
 
     canvas.context.fillStyle = "rgba(0, 0, 0, 1)";
     canvas.context.font = `${fontSize}px courier`;
 
-    canvas.context.fillText(`${state.draging ? "Draging" : "Not draging"}`, 10, fontSize);
+    canvas.context.fillText(`${state.panning ? "Panning" : "Not panning"}`, 10, fontSize);
     canvas.context.fillText(
-        `Mouse position:    ` +
-        `[${state.mousePos.h}, ${state.mousePos.v}]`,
+        `Pointer on-screen position:     ` +
+        `[${state.pointerOnScreenPosition.h}, ${state.pointerOnScreenPosition.v}]`,
         10, fontSize * 2
     );
     canvas.context.fillText(
-        `Rectangle position:` +
-        `[${subnet.position.h}, ${subnet.position.v}]`,
+        `Pan offset:                     ` +
+        `[${state.panOffset.h}, ${state.panOffset.v}]`,
         10, fontSize * 3
     );
     canvas.context.fillText(
-        `Mouse offset:      ` +
-        `[${state.mouseOffset.h}, ${state.mouseOffset.v}]`,
+        `Space origin on-screen position:` +
+        `[${state.spaceOriginOnScreenPosition.h}, ${state.spaceOriginOnScreenPosition.v}]`,
         10, fontSize * 4
-    );
-    canvas.context.fillText(
-        `Window size:       ` +
-        `[${document.documentElement.clientWidth}` +
-        ` x ` +
-        `${document.documentElement.clientHeight}]`,
-        10, fontSize * 5
     );
 };
