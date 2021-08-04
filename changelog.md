@@ -1,3 +1,10 @@
-Fixed bug of incorrect panning when the pointer went outside the canvas / browser inner window.
+Replaced subnet object with subnet class.
 
-Event handlers have been reworked. The 'addEventListener' method was used, which works much better than properties.
+Added subnets column class with changeable vertical scale according to its
+horizontal position.
+
+Added on-screen console.
+
+
+KNOWN BUG:
+The vertical positions of the column elements change incorrectly after appending/cutting.
