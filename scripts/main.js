@@ -200,8 +200,8 @@ class column {
 
 canvas.resize();
 
-state.dragOriginPosition.h = +((canvas.element.width / 2).toFixed());
-state.dragOriginPosition.v = +((canvas.element.height / 2).toFixed());
+state.dragOriginPosition.h = int(canvas.element.width / 2);
+state.dragOriginPosition.v = int(canvas.element.height / 2);
 
 let columnsOnScreen = 3;
 let rowsInMainColumn = 10;
