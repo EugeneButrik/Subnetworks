@@ -147,17 +147,12 @@ class column {
 
 		this.elementWidth = canvas.element.width / columnsOnScreen;
 
-
-		let subnetVertPositionInColumn = 0;
-
 		for (let s in this.subnets) {
 			this.subnets[s].width = this.elementWidth;
 			this.subnets[s].height = this.elementHeight;
 
 			this.subnets[s].position.h = this.position.h - this.elementWidth / 2;
-			this.subnets[s].position.v = this.position.v + subnetVertPositionInColumn;
-
-			subnetVertPositionInColumn += this.subnets[s].height;
+			this.subnets[s].position.v = this.position.v + this.subnets[s].height * int(this.subnets[s].label);
 
 			this.subnets[s].draw();
 		};
@@ -209,6 +204,10 @@ let rowsInMainColumn = 10;
 let c = new column();
 
 c.appendBottom();
+c.appendBottom();
+c.appendBottom();
+c.appendTop();
+c.appendTop();
 
 render();
 
@@ -290,15 +289,29 @@ canvas.element.addEventListener('wheel', function (e) {
 
 	e.preventDefault();
 
-	if (e.deltaY < 0) {
+	if (e.deltaY < 0 && !e.altKey) {
 		c.cutBottom();
 
-		if (DEBUG) { onScreenConsole(`Column top cut`) };
-	} else {
+		if (DEBUG) { onScreenConsole(`Column bottom cut`) };
+	};
+
+	if (e.deltaY > 0 && !e.altKey) {
 		c.appendBottom();
 
+		if (DEBUG) { onScreenConsole(`Column bottom appended`) };
+	};
+
+	if (e.deltaY < 0 && e.altKey) {
+		c.appendTop();
+
 		if (DEBUG) { onScreenConsole(`Column top appended`) };
-	}
+	};
+
+	if (e.deltaY > 0 && e.altKey) {
+		c.cutTop();
+
+		if (DEBUG) { onScreenConsole(`Column top cut`) };
+	};
 
 	render();
 }, false);
@@ -367,7 +380,7 @@ function onScreenConsole(message) {
 };
 
 function drawLog() {
-	let fontSize = 24;
+	let fontSize = canvas.element.height / 60;
 
 	canvas.context.fillStyle = "rgba(0, 0, 0, 1)";
 	canvas.context.font = `${fontSize}px courier`;
@@ -382,14 +395,9 @@ function drawLog() {
 		10, fontSize * 2
 	);
 	canvas.context.fillText(
-		`Pan offset:                     ` +
-		`[${state.panOffset.h}, ${state.panOffset.v}]`,
-		10, fontSize * 3
-	);
-	canvas.context.fillText(
 		`Space origin on-screen position:` +
 		`[${state.dragOriginPosition.h},` +
 		`${state.dragOriginPosition.v}]`,
-		10, fontSize * 4
+		10, fontSize * 3
 	);
 };

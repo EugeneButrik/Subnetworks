@@ -1,10 +1,5 @@
-Replaced subnet object with subnet class.
-
-Added subnets column class with changeable vertical scale according to its
-horizontal position.
-
-Added on-screen console.
+Fixed a bug related to incorrect change of the vertical position of the column elements after appending/cutting.
 
 
 KNOWN BUG:
-The vertical positions of the column elements change incorrectly after appending/cutting.
+The 'base point' of vertical scale matches with the base point of a column but has to be matched with the pointer.
