@@ -62,14 +62,9 @@ let state = {
 		v: undefined,
 	},
 
-	panOffset: {
-		h: undefined,
-		v: undefined,
-	},
-
-	dragOriginPosition: {
-		h: undefined,
-		v: undefined,
+	panDisplacement: {
+		h: 0,
+		v: 0,
 	},
 };
 
@@ -133,8 +128,8 @@ class column {
 	constructor() { };
 
 	draw() {
-		this.position.h = state.dragOriginPosition.h;
-		this.position.v = state.dragOriginPosition.v;
+		this.position.h += state.panDisplacement.h;
+		this.position.v += state.panDisplacement.v;
 
 		let baseElementHeight = canvas.element.height / rowsInMainColumn;
 		let power = (
@@ -195,13 +190,12 @@ class column {
 
 canvas.resize();
 
-state.dragOriginPosition.h = int(canvas.element.width / 2);
-state.dragOriginPosition.v = int(canvas.element.height / 2);
-
 let columnsOnScreen = 3;
 let rowsInMainColumn = 10;
 
 let c = new column();
+c.position.h = int(canvas.element.width / 2);
+c.position.v = int(canvas.element.height / 2);
 
 c.appendBottom();
 c.appendBottom();
@@ -236,9 +230,6 @@ window.addEventListener('mousedown', function (e) {
 
 	state.panning = true;
 
-	state.panOffset.h = int(e.clientX - state.dragOriginPosition.h);
-	state.panOffset.v = int(e.clientY - state.dragOriginPosition.v);
-
 	render();
 }, false);
 
@@ -257,22 +248,22 @@ window.addEventListener('mousemove', function (e) {
 
 	e.preventDefault();
 
-	state.pointerPosition.h = int(e.clientX);
-	state.pointerPosition.v = int(e.clientY);
-
 	if (e.buttons == 0) {
 		state.panning = false;
 	} else {
 		state.panning = true;
 	};
-
+	
 	if (state.panning) {
-		state.dragOriginPosition.h =
-			state.pointerPosition.h - state.panOffset.h;
-
-		state.dragOriginPosition.v =
-			state.pointerPosition.v - state.panOffset.v;
+		state.panDisplacement.h = e.clientX - state.pointerPosition.h;
+		state.panDisplacement.v = e.clientY - state.pointerPosition.v;
+	} else {
+		state.panDisplacement.h = 0;
+		state.panDisplacement.v = 0;
 	};
+	
+	state.pointerPosition.h = e.clientX;
+	state.pointerPosition.v = e.clientY;
 
 	render();
 }, false);
@@ -323,10 +314,8 @@ canvas.element.addEventListener('touchstart', function (e) {
 
 	state.panning = true;
 
-	state.panOffset.h =
-		int(e.touches[0].clientX - state.dragOriginPosition.h);
-	state.panOffset.v =
-		int(e.touches[0].clientY - state.dragOriginPosition.v);
+	state.pointerPosition.h = e.touches[0].clientX;
+	state.pointerPosition.v = e.touches[0].clientY;
 
 	render();
 }, true);
@@ -346,15 +335,11 @@ canvas.element.addEventListener('touchmove', function (e) {
 
 	e.preventDefault();
 
+	state.panDisplacement.h = int(e.touches[0].clientX) - state.pointerPosition.h;
+	state.panDisplacement.v = int(e.touches[0].clientY) - state.pointerPosition.v;
+
 	state.pointerPosition.h = int(e.touches[0].clientX);
 	state.pointerPosition.v = int(e.touches[0].clientY);
-
-	if (state.panning) {
-		state.dragOriginPosition.h =
-			state.pointerPosition.h - state.panOffset.h;
-		state.dragOriginPosition.v =
-			state.pointerPosition.v - state.panOffset.v;
-	}
 
 	render();
 }, false);
@@ -386,14 +371,13 @@ function drawPanel() {
 		10, fontSize
 	);
 	canvas.context.fillText(
-		`Pointer on-screen position:     ` +
+		`Pointer on-screen position:` +
 		`[${state.pointerPosition.h}, ${state.pointerPosition.v}]`,
 		10, fontSize * 2
 	);
 	canvas.context.fillText(
-		`Space origin on-screen position:` +
-		`[${state.dragOriginPosition.h},` +
-		`${state.dragOriginPosition.v}]`,
+		`Pan displacement:          ` +
+		`[${state.panDisplacement.h}, ${state.panDisplacement.v}]`,
 		10, fontSize * 3
 	);
 };

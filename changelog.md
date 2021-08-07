@@ -1,5 +1,4 @@
-Reworked on-screen console object.
-The conflict between implemented object and the one of DOM API is eliminated.
+Reworked panning.
 
 
 KNOWN BUG:
