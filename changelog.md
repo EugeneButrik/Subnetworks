@@ -1,4 +1,5 @@
-Fixed a bug related to incorrect change of the vertical position of the column elements after appending/cutting.
+Reworked on-screen console object.
+The conflict between implemented object and the one of DOM API is eliminated.
 
 
 KNOWN BUG:

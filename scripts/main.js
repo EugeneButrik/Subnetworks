@@ -16,13 +16,13 @@ let canvas = {
 	},
 };
 
-let console = {
+let onScreenConsole = {
 	strings: [],
 	lastMessage: undefined,
 	repeated: 1,
 	maxStrings: 5,
 
-	add: function (s) {
+	log: function (s) {
 		if (s == this.lastMessage) {
 			this.strings[0] = `|${++this.repeated}| ` + s;
 		} else {
@@ -214,7 +214,7 @@ render();
 
 
 window.addEventListener('resize', function (e) {
-	if (DEBUG) { onScreenConsole(`window 'resize' event occurred`) };
+	if (DEBUG) { onScreenConsole.log(`window 'resize' event occurred`) };
 
 	canvas.resize();
 
@@ -222,7 +222,7 @@ window.addEventListener('resize', function (e) {
 }, false);
 
 window.addEventListener('contextmenu', function (e) {
-	if (DEBUG) { onScreenConsole(`window 'contextmenu' event occurred`) };
+	if (DEBUG) { onScreenConsole.log(`window 'contextmenu' event occurred`) };
 
 	e.preventDefault();
 
@@ -230,7 +230,7 @@ window.addEventListener('contextmenu', function (e) {
 }, false);
 
 window.addEventListener('mousedown', function (e) {
-	if (DEBUG) { onScreenConsole(`'mousedown' event occurred`) };
+	if (DEBUG) { onScreenConsole.log(`'mousedown' event occurred`) };
 
 	e.preventDefault();
 
@@ -243,7 +243,7 @@ window.addEventListener('mousedown', function (e) {
 }, false);
 
 window.addEventListener('mouseup', function (e) {
-	if (DEBUG) { onScreenConsole(`'mouseup' event occurred`) };
+	if (DEBUG) { onScreenConsole.log(`'mouseup' event occurred`) };
 
 	e.preventDefault();
 
@@ -253,7 +253,7 @@ window.addEventListener('mouseup', function (e) {
 }, false);
 
 window.addEventListener('mousemove', function (e) {
-	if (DEBUG) { onScreenConsole(`'mousemove' event occurred`) };
+	if (DEBUG) { onScreenConsole.log(`'mousemove' event occurred`) };
 
 	e.preventDefault();
 
@@ -285,39 +285,39 @@ canvas.element.addEventListener('wheel', function (e) {
 	So preventDefault() method can't be called and browser can handle mouse wheel
 	events, e.g. zooming with Ctrl key pressed.
 	*/
-	if (DEBUG) { onScreenConsole(`'wheel' event occurred`) };
+	if (DEBUG) { onScreenConsole.log(`'wheel' event occurred`) };
 
 	e.preventDefault();
 
 	if (e.deltaY < 0 && !e.altKey) {
 		c.cutBottom();
 
-		if (DEBUG) { onScreenConsole(`Column bottom cut`) };
+		if (DEBUG) { onScreenConsole.log(`Column bottom cut`) };
 	};
 
 	if (e.deltaY > 0 && !e.altKey) {
 		c.appendBottom();
 
-		if (DEBUG) { onScreenConsole(`Column bottom appended`) };
+		if (DEBUG) { onScreenConsole.log(`Column bottom appended`) };
 	};
 
 	if (e.deltaY < 0 && e.altKey) {
 		c.appendTop();
 
-		if (DEBUG) { onScreenConsole(`Column top appended`) };
+		if (DEBUG) { onScreenConsole.log(`Column top appended`) };
 	};
 
 	if (e.deltaY > 0 && e.altKey) {
 		c.cutTop();
 
-		if (DEBUG) { onScreenConsole(`Column top cut`) };
+		if (DEBUG) { onScreenConsole.log(`Column top cut`) };
 	};
 
 	render();
 }, false);
 
 canvas.element.addEventListener('touchstart', function (e) {
-	if (DEBUG) { onScreenConsole(`'touchstart' event occurred`) };
+	if (DEBUG) { onScreenConsole.log(`'touchstart' event occurred`) };
 
 	e.preventDefault();
 
@@ -332,7 +332,7 @@ canvas.element.addEventListener('touchstart', function (e) {
 }, true);
 
 canvas.element.addEventListener('touchend', function (e) {
-	if (DEBUG) { onScreenConsole(`'touchend' event occurred`) };
+	if (DEBUG) { onScreenConsole.log(`'touchend' event occurred`) };
 
 	e.preventDefault();
 
@@ -342,7 +342,7 @@ canvas.element.addEventListener('touchend', function (e) {
 }, false);
 
 canvas.element.addEventListener('touchmove', function (e) {
-	if (DEBUG) { onScreenConsole(`'touchmove' event occurred`) };
+	if (DEBUG) { onScreenConsole.log(`'touchmove' event occurred`) };
 
 	e.preventDefault();
 
@@ -364,22 +364,18 @@ canvas.element.addEventListener('touchmove', function (e) {
 function render() {
 	canvas.clear();
 
-	console.draw();
+	onScreenConsole.draw();
 
 	c.draw();
 
-	drawLog();
+	drawPanel();
 };
 
 function int(number) {
 	return +(number.toFixed());
 };
 
-function onScreenConsole(message) {
-	console.add(message);
-};
-
-function drawLog() {
+function drawPanel() {
 	let fontSize = canvas.element.height / 60;
 
 	canvas.context.fillStyle = "rgba(0, 0, 0, 1)";
