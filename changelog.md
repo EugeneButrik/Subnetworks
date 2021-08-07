@@ -1,4 +1,6 @@
-Reworked panning.
+Reworked information elements.
+The elements of the on-screen console and the panel are combined into one element — Info Panel.
++ Minor code refactoring.
 
 
 KNOWN BUG:

@@ -16,44 +16,6 @@ let canvas = {
 	},
 };
 
-let onScreenConsole = {
-	strings: [],
-	lastMessage: undefined,
-	repeated: 1,
-	maxStrings: 5,
-
-	log: function (s) {
-		if (s == this.lastMessage) {
-			this.strings[0] = `|${++this.repeated}| ` + s;
-		} else {
-			this.strings.unshift(s);
-
-			this.lastMessage = s;
-			this.repeated = 1;
-		};
-
-		if (this.strings.length > this.maxStrings) {
-			this.strings.pop();
-		};
-	},
-
-	draw: function () {
-		canvas.context.fillStyle = "rgba(0, 0, 0, 1)";
-
-		let fontSize = canvas.element.height / 60;
-
-		canvas.context.font = `${fontSize}px courier`;
-
-		for (let s in this.strings) {
-			canvas.context.fillText(
-				this.strings[s],
-				10,
-				canvas.element.height - (fontSize * (+(s) + 1))
-			);
-		};
-	},
-};
-
 let state = {
 	panning: false,
 
@@ -65,6 +27,60 @@ let state = {
 	panDisplacement: {
 		h: 0,
 		v: 0,
+	},
+};
+
+let infoPanel = {
+	logStrings: [],
+	logLastMessage: undefined,
+	repeated: 1,
+	logMaxStrings: 5,
+
+	log: function (s) {
+		if (s == this.logLastMessage) {
+			this.logStrings[0] = `|${++this.repeated}| ` + s;
+		} else {
+			this.logStrings.unshift(s);
+
+			this.logLastMessage = s;
+			this.repeated = 1;
+		};
+
+		if (this.logStrings.length > this.logMaxStrings) {
+			this.logStrings.pop();
+		};
+	},
+
+	draw: function () {
+		canvas.context.fillStyle = "rgba(0, 0, 0, 1)";
+		let fontSize = canvas.element.height / 60;
+		canvas.context.font = `${fontSize}px courier`;
+
+		let panelStrings = [
+			`${state.panning ? "Panning" : "Not panning"}`,
+	
+			`Pointer on-screen position:` +
+			`[${state.pointerPosition.h}, ${state.pointerPosition.v}]`,
+	
+			`Pan displacement:          ` +
+			`[${state.panDisplacement.h}, ${state.panDisplacement.v}]`
+		];
+
+		for (let s in panelStrings) {
+			canvas.context.fillText(
+				panelStrings[s],
+				10,
+				10 + (fontSize * (+(s) + 1))
+			);
+		};
+
+		for (let s in this.logStrings) {
+			canvas.context.fillText(
+				this.logStrings[s],
+				10,
+				canvas.element.height - (fontSize * (+(s) + 1))
+			);
+		};
 	},
 };
 
@@ -193,22 +209,22 @@ canvas.resize();
 let columnsOnScreen = 3;
 let rowsInMainColumn = 10;
 
-let c = new column();
-c.position.h = int(canvas.element.width / 2);
-c.position.v = int(canvas.element.height / 2);
+let testColumn = new column();
+testColumn.position.h = int(canvas.element.width / 2);
+testColumn.position.v = int(canvas.element.height / 2);
 
-c.appendBottom();
-c.appendBottom();
-c.appendBottom();
-c.appendTop();
-c.appendTop();
+testColumn.appendBottom();
+testColumn.appendBottom();
+testColumn.appendBottom();
+testColumn.appendTop();
+testColumn.appendTop();
 
 render();
 
 
 
 window.addEventListener('resize', function (e) {
-	if (DEBUG) { onScreenConsole.log(`window 'resize' event occurred`) };
+	if (DEBUG) { infoPanel.log(`window 'resize' event occurred`) };
 
 	canvas.resize();
 
@@ -216,7 +232,7 @@ window.addEventListener('resize', function (e) {
 }, false);
 
 window.addEventListener('contextmenu', function (e) {
-	if (DEBUG) { onScreenConsole.log(`window 'contextmenu' event occurred`) };
+	if (DEBUG) { infoPanel.log(`window 'contextmenu' event occurred`) };
 
 	e.preventDefault();
 
@@ -224,7 +240,7 @@ window.addEventListener('contextmenu', function (e) {
 }, false);
 
 window.addEventListener('mousedown', function (e) {
-	if (DEBUG) { onScreenConsole.log(`'mousedown' event occurred`) };
+	if (DEBUG) { infoPanel.log(`'mousedown' event occurred`) };
 
 	e.preventDefault();
 
@@ -234,7 +250,7 @@ window.addEventListener('mousedown', function (e) {
 }, false);
 
 window.addEventListener('mouseup', function (e) {
-	if (DEBUG) { onScreenConsole.log(`'mouseup' event occurred`) };
+	if (DEBUG) { infoPanel.log(`'mouseup' event occurred`) };
 
 	e.preventDefault();
 
@@ -244,7 +260,7 @@ window.addEventListener('mouseup', function (e) {
 }, false);
 
 window.addEventListener('mousemove', function (e) {
-	if (DEBUG) { onScreenConsole.log(`'mousemove' event occurred`) };
+	if (DEBUG) { infoPanel.log(`'mousemove' event occurred`) };
 
 	e.preventDefault();
 
@@ -253,7 +269,7 @@ window.addEventListener('mousemove', function (e) {
 	} else {
 		state.panning = true;
 	};
-	
+
 	if (state.panning) {
 		state.panDisplacement.h = e.clientX - state.pointerPosition.h;
 		state.panDisplacement.v = e.clientY - state.pointerPosition.v;
@@ -261,7 +277,7 @@ window.addEventListener('mousemove', function (e) {
 		state.panDisplacement.h = 0;
 		state.panDisplacement.v = 0;
 	};
-	
+
 	state.pointerPosition.h = e.clientX;
 	state.pointerPosition.v = e.clientY;
 
@@ -276,39 +292,39 @@ canvas.element.addEventListener('wheel', function (e) {
 	So preventDefault() method can't be called and browser can handle mouse wheel
 	events, e.g. zooming with Ctrl key pressed.
 	*/
-	if (DEBUG) { onScreenConsole.log(`'wheel' event occurred`) };
+	if (DEBUG) { infoPanel.log(`'wheel' event occurred`) };
 
 	e.preventDefault();
 
 	if (e.deltaY < 0 && !e.altKey) {
-		c.cutBottom();
+		testColumn.cutBottom();
 
-		if (DEBUG) { onScreenConsole.log(`Column bottom cut`) };
+		if (DEBUG) { infoPanel.log(`Column bottom cut`) };
 	};
 
 	if (e.deltaY > 0 && !e.altKey) {
-		c.appendBottom();
+		testColumn.appendBottom();
 
-		if (DEBUG) { onScreenConsole.log(`Column bottom appended`) };
+		if (DEBUG) { infoPanel.log(`Column bottom appended`) };
 	};
 
 	if (e.deltaY < 0 && e.altKey) {
-		c.appendTop();
+		testColumn.appendTop();
 
-		if (DEBUG) { onScreenConsole.log(`Column top appended`) };
+		if (DEBUG) { infoPanel.log(`Column top appended`) };
 	};
 
 	if (e.deltaY > 0 && e.altKey) {
-		c.cutTop();
+		testColumn.cutTop();
 
-		if (DEBUG) { onScreenConsole.log(`Column top cut`) };
+		if (DEBUG) { infoPanel.log(`Column top cut`) };
 	};
 
 	render();
 }, false);
 
 canvas.element.addEventListener('touchstart', function (e) {
-	if (DEBUG) { onScreenConsole.log(`'touchstart' event occurred`) };
+	if (DEBUG) { infoPanel.log(`'touchstart' event occurred`) };
 
 	e.preventDefault();
 
@@ -321,7 +337,7 @@ canvas.element.addEventListener('touchstart', function (e) {
 }, true);
 
 canvas.element.addEventListener('touchend', function (e) {
-	if (DEBUG) { onScreenConsole.log(`'touchend' event occurred`) };
+	if (DEBUG) { infoPanel.log(`'touchend' event occurred`) };
 
 	e.preventDefault();
 
@@ -331,7 +347,7 @@ canvas.element.addEventListener('touchend', function (e) {
 }, false);
 
 canvas.element.addEventListener('touchmove', function (e) {
-	if (DEBUG) { onScreenConsole.log(`'touchmove' event occurred`) };
+	if (DEBUG) { infoPanel.log(`'touchmove' event occurred`) };
 
 	e.preventDefault();
 
@@ -349,35 +365,11 @@ canvas.element.addEventListener('touchmove', function (e) {
 function render() {
 	canvas.clear();
 
-	onScreenConsole.draw();
+	infoPanel.draw();
 
-	c.draw();
-
-	drawPanel();
+	testColumn.draw();
 };
 
 function int(number) {
 	return +(number.toFixed());
-};
-
-function drawPanel() {
-	let fontSize = canvas.element.height / 60;
-
-	canvas.context.fillStyle = "rgba(0, 0, 0, 1)";
-	canvas.context.font = `${fontSize}px courier`;
-
-	canvas.context.fillText(
-		`${state.panning ? "Panning" : "Not panning"}`,
-		10, fontSize
-	);
-	canvas.context.fillText(
-		`Pointer on-screen position:` +
-		`[${state.pointerPosition.h}, ${state.pointerPosition.v}]`,
-		10, fontSize * 2
-	);
-	canvas.context.fillText(
-		`Pan displacement:          ` +
-		`[${state.panDisplacement.h}, ${state.panDisplacement.v}]`,
-		10, fontSize * 3
-	);
 };
