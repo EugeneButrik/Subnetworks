@@ -145,21 +145,53 @@ class column {
 	elementWidth;
 	elementHeight;
 
+	/**
+	 * The distance from the pointer to the column origin vertical
+	 * position, measured in pixels
+	*/
+	onScreenOffsetFromPanPointer = 0;
+
+	/**
+	 * The distance from the pointer to the column origin vertical
+	 * position, measured in its elements heights
+	*/
+	relativeOffsetFromPanPointer = 0;
+	
 	constructor() { };
 
 	draw() {
 		this.position.h += state.panDisplacement.h;
-		this.position.v += state.panDisplacement.v;
 
-		let baseElementHeight = canvas.element.height /
-			rowsInMainColumn;
-		let power =
-			(canvas.element.width / 2 - this.position.h)
-			/
-			(canvas.element.width / columnsOnScreen);
-		let ratio = 1 / 2 ** power;
-		this.elementHeight = baseElementHeight * ratio;
+		if (state.panning) {
+			if (this.relativeOffsetFromPanPointer == 0) {
+				this.relativeOffsetFromPanPointer =
+					(this.position.v - state.pointerPosition.v) /
+					this.getElementHeight(this.position.h);
+			};
+		} else {
+			this.onScreenOffsetFromPanPointer = 0;
+			this.relativeOffsetFromPanPointer = 0;
+		};
 
+		let newOnScreenOffsetFromPanPointer =
+			this.relativeOffsetFromPanPointer *
+			this.getElementHeight(this.position.h);
+
+		let onScreenOffsetFromPanPointerIncrement;
+		if (this.onScreenOffsetFromPanPointer != 0) {
+			onScreenOffsetFromPanPointerIncrement =
+				newOnScreenOffsetFromPanPointer -
+				this.onScreenOffsetFromPanPointer;
+		} else {
+			onScreenOffsetFromPanPointerIncrement = 0;
+		};
+		this.onScreenOffsetFromPanPointer =
+			newOnScreenOffsetFromPanPointer;
+
+		this.position.v += state.panDisplacement.v +
+			onScreenOffsetFromPanPointerIncrement;
+
+		this.elementHeight = this.getElementHeight(this.position.h);
 		this.elementWidth = canvas.element.width / columnsOnScreen;
 
 		for (let s in this.subnets) {
@@ -173,6 +205,30 @@ class column {
 
 			this.subnets[s].draw();
 		};
+	};
+
+	getElementHeight(horPosition) {
+		let baseElementHeight = canvas.element.height /
+			rowsInMainColumn;
+		let elementHeight = baseElementHeight *
+			this.getVertScale(horPosition);
+
+		return elementHeight;
+	};
+
+	getVertScale(horPosition) {
+		let horPositionRelativeToCanvasMiddle = horPosition -
+			canvas.element.width / 2;
+		let columnWidth = canvas.element.width / columnsOnScreen;
+		let power = -horPositionRelativeToCanvasMiddle / columnWidth;
+		/*
+		The relative horizontal position must be negative for the
+		inverse direction of vertical scale change (small subnets are
+		placed to the left of large)
+		*/
+		let scale = 1 / 2 ** power;
+
+		return scale;
 	};
 
 	appendBottom() {
