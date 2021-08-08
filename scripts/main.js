@@ -12,7 +12,12 @@ let canvas = {
 	},
 
 	clear: function () {
-		this.context.clearRect(0, 0, this.element.width, this.element.height);
+		this.context.clearRect(
+			0,
+			0,
+			this.element.width,
+			this.element.height
+		);
 	},
 };
 
@@ -58,12 +63,14 @@ let infoPanel = {
 
 		let panelStrings = [
 			`${state.panning ? "Panning" : "Not panning"}`,
-	
+
 			`Pointer on-screen position:` +
-			`[${state.pointerPosition.h}, ${state.pointerPosition.v}]`,
-	
+			`[${state.pointerPosition.h}, ` +
+			`${state.pointerPosition.v}]`,
+
 			`Pan displacement:          ` +
-			`[${state.panDisplacement.h}, ${state.panDisplacement.v}]`
+			`[${state.panDisplacement.h}, ` +
+			`${state.panDisplacement.v}]`,
 		];
 
 		for (let s in panelStrings) {
@@ -92,10 +99,8 @@ class subnet {
 
 	width;
 	height;
-
 	color = "rgba(200, 0, 0, 0.5)";
-
-	label = 5;
+	label;
 
 	constructor() { };
 
@@ -136,10 +141,9 @@ class column {
 		v: undefined,
 	};
 
+	subnets = [];
 	elementWidth;
 	elementHeight;
-
-	subnets = [];
 
 	constructor() { };
 
@@ -147,12 +151,12 @@ class column {
 		this.position.h += state.panDisplacement.h;
 		this.position.v += state.panDisplacement.v;
 
-		let baseElementHeight = canvas.element.height / rowsInMainColumn;
-		let power = (
+		let baseElementHeight = canvas.element.height /
+			rowsInMainColumn;
+		let power =
 			(canvas.element.width / 2 - this.position.h)
 			/
-			(canvas.element.width / columnsOnScreen)
-		);
+			(canvas.element.width / columnsOnScreen);
 		let ratio = 1 / 2 ** power;
 		this.elementHeight = baseElementHeight * ratio;
 
@@ -162,8 +166,10 @@ class column {
 			this.subnets[s].width = this.elementWidth;
 			this.subnets[s].height = this.elementHeight;
 
-			this.subnets[s].position.h = this.position.h - this.elementWidth / 2;
-			this.subnets[s].position.v = this.position.v + this.subnets[s].height * int(this.subnets[s].label);
+			this.subnets[s].position.h = this.position.h -
+				this.elementWidth / 2;
+			this.subnets[s].position.v = this.position.v +
+				this.subnets[s].height * int(this.subnets[s].label);
 
 			this.subnets[s].draw();
 		};
@@ -173,7 +179,8 @@ class column {
 		let newSubnet = new subnet();
 
 		if (this.subnets.length != 0) {
-			newSubnet.label = +(this.subnets[this.subnets.length - 1].label) + 1;
+			newSubnet.label =
+				+(this.subnets[this.subnets.length - 1].label) + 1;
 		} else {
 			newSubnet.label = 0;
 		};
@@ -224,24 +231,18 @@ render();
 
 
 window.addEventListener('resize', function (e) {
-	if (DEBUG) { infoPanel.log(`window 'resize' event occurred`) };
-
 	canvas.resize();
 
 	render();
 }, false);
 
 window.addEventListener('contextmenu', function (e) {
-	if (DEBUG) { infoPanel.log(`window 'contextmenu' event occurred`) };
-
 	e.preventDefault();
 
 	render();
 }, false);
 
 window.addEventListener('mousedown', function (e) {
-	if (DEBUG) { infoPanel.log(`'mousedown' event occurred`) };
-
 	e.preventDefault();
 
 	state.panning = true;
@@ -250,8 +251,6 @@ window.addEventListener('mousedown', function (e) {
 }, false);
 
 window.addEventListener('mouseup', function (e) {
-	if (DEBUG) { infoPanel.log(`'mouseup' event occurred`) };
-
 	e.preventDefault();
 
 	state.panning = false;
@@ -260,8 +259,6 @@ window.addEventListener('mouseup', function (e) {
 }, false);
 
 window.addEventListener('mousemove', function (e) {
-	if (DEBUG) { infoPanel.log(`'mousemove' event occurred`) };
-
 	e.preventDefault();
 
 	if (e.buttons == 0) {
@@ -286,46 +283,35 @@ window.addEventListener('mousemove', function (e) {
 
 canvas.element.addEventListener('wheel', function (e) {
 	/*
-	This event listener can not to be added to window because in that case it is
-	"Unable to preventDefault inside passive event listener due to target being
-	treated as passive" (Google Chrome).
-	So preventDefault() method can't be called and browser can handle mouse wheel
-	events, e.g. zooming with Ctrl key pressed.
+	This event listener can not to be added to window because in that
+	case it is "Unable to preventDefault inside passive event listener
+	due to target being treated as passive" (Google Chrome).
+	So preventDefault() method can't be called and browser can handle
+	mouse wheel events, e.g. zooming with Ctrl key pressed.
 	*/
-	if (DEBUG) { infoPanel.log(`'wheel' event occurred`) };
 
 	e.preventDefault();
 
 	if (e.deltaY < 0 && !e.altKey) {
 		testColumn.cutBottom();
-
-		if (DEBUG) { infoPanel.log(`Column bottom cut`) };
 	};
 
 	if (e.deltaY > 0 && !e.altKey) {
 		testColumn.appendBottom();
-
-		if (DEBUG) { infoPanel.log(`Column bottom appended`) };
 	};
 
 	if (e.deltaY < 0 && e.altKey) {
 		testColumn.appendTop();
-
-		if (DEBUG) { infoPanel.log(`Column top appended`) };
 	};
 
 	if (e.deltaY > 0 && e.altKey) {
 		testColumn.cutTop();
-
-		if (DEBUG) { infoPanel.log(`Column top cut`) };
 	};
 
 	render();
 }, false);
 
 canvas.element.addEventListener('touchstart', function (e) {
-	if (DEBUG) { infoPanel.log(`'touchstart' event occurred`) };
-
 	e.preventDefault();
 
 	state.panning = true;
@@ -337,8 +323,6 @@ canvas.element.addEventListener('touchstart', function (e) {
 }, true);
 
 canvas.element.addEventListener('touchend', function (e) {
-	if (DEBUG) { infoPanel.log(`'touchend' event occurred`) };
-
 	e.preventDefault();
 
 	state.panning = false;
@@ -347,12 +331,12 @@ canvas.element.addEventListener('touchend', function (e) {
 }, false);
 
 canvas.element.addEventListener('touchmove', function (e) {
-	if (DEBUG) { infoPanel.log(`'touchmove' event occurred`) };
-
 	e.preventDefault();
 
-	state.panDisplacement.h = int(e.touches[0].clientX) - state.pointerPosition.h;
-	state.panDisplacement.v = int(e.touches[0].clientY) - state.pointerPosition.v;
+	state.panDisplacement.h = int(e.touches[0].clientX) -
+		state.pointerPosition.h;
+	state.panDisplacement.v = int(e.touches[0].clientY) -
+		state.pointerPosition.v;
 
 	state.pointerPosition.h = int(e.touches[0].clientX);
 	state.pointerPosition.v = int(e.touches[0].clientY);
