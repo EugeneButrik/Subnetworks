@@ -242,6 +242,38 @@ window.addEventListener('contextmenu', function (e) {
 	render();
 }, false);
 
+window.addEventListener('keydown', function (e) {
+	if (e.code == `ArrowUp`) {
+		state.panning = true;
+		state.panDisplacement.v = -10;
+	};
+
+	if (e.code == `ArrowDown`) {
+		state.panning = true;
+		state.panDisplacement.v = 10;
+	};
+
+	if (e.code == `ArrowRight`) {
+		state.panning = true;
+		state.panDisplacement.h = 10;
+	};
+
+	if (e.code == `ArrowLeft`) {
+		state.panning = true;
+		state.panDisplacement.h = -10;
+	};
+
+	render();
+}, false);
+
+window.addEventListener('keyup', function (e) {
+	state.panning = false;
+	state.panDisplacement.h = 0;
+	state.panDisplacement.v = 0;
+
+	render();
+}, false);
+
 window.addEventListener('mousedown', function (e) {
 	e.preventDefault();
 

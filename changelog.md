@@ -1,5 +1,5 @@
-Minor code refactoring.
-The lines of code are truncated to a size of 70 characters.
+Added the functionality of panning with the help of the keyboard.
+Added the Event handlers for arrow keys pressed events.
 
 
 
