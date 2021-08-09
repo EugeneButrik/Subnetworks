@@ -149,50 +149,52 @@ class column {
 	 * The distance from the pointer to the column origin vertical
 	 * position, measured in pixels
 	*/
-	onScreenOffsetFromPanPointer = 0;
+	onScreenOffset = 0;
 
 	/**
 	 * The distance from the pointer to the column origin vertical
 	 * position, measured in its elements heights
 	*/
-	relativeOffsetFromPanPointer = 0;
-	
+	relativeOffset = 0;
+
 	constructor() { };
 
 	draw() {
-		this.position.h += state.panDisplacement.h;
+		this.position.h += int(state.panDisplacement.h);
 
 		if (state.panning) {
-			if (this.relativeOffsetFromPanPointer == 0) {
-				this.relativeOffsetFromPanPointer =
+			if (this.relativeOffset == 0) {
+				this.relativeOffset =
 					(this.position.v - state.pointerPosition.v) /
 					this.getElementHeight(this.position.h);
 			};
 		} else {
-			this.onScreenOffsetFromPanPointer = 0;
-			this.relativeOffsetFromPanPointer = 0;
+			this.onScreenOffset = 0;
+			this.relativeOffset = 0;
 		};
 
-		let newOnScreenOffsetFromPanPointer =
-			this.relativeOffsetFromPanPointer *
+		let newOnScreenOffset =
+			this.relativeOffset *
 			this.getElementHeight(this.position.h);
 
 		let onScreenOffsetFromPanPointerIncrement;
-		if (this.onScreenOffsetFromPanPointer != 0) {
+
+		if (this.onScreenOffset != 0) {
 			onScreenOffsetFromPanPointerIncrement =
-				newOnScreenOffsetFromPanPointer -
-				this.onScreenOffsetFromPanPointer;
+				newOnScreenOffset -
+				this.onScreenOffset;
 		} else {
 			onScreenOffsetFromPanPointerIncrement = 0;
 		};
-		this.onScreenOffsetFromPanPointer =
-			newOnScreenOffsetFromPanPointer;
+		this.onScreenOffset = newOnScreenOffset;
 
-		this.position.v += state.panDisplacement.v +
-			onScreenOffsetFromPanPointerIncrement;
+		this.position.v += int(state.panDisplacement.v +
+			onScreenOffsetFromPanPointerIncrement);
 
-		this.elementHeight = this.getElementHeight(this.position.h);
-		this.elementWidth = canvas.element.width / columnsOnScreen;
+		this.elementHeight =
+			int(this.getElementHeight(this.position.h));
+		this.elementWidth =
+			int(canvas.element.width / columnsOnScreen);
 
 		for (let s in this.subnets) {
 			this.subnets[s].width = this.elementWidth;
