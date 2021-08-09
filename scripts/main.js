@@ -177,50 +177,51 @@ class column {
 			this.relativeOffset *
 			this.getElementHeight(this.position.h);
 
-		let onScreenOffsetFromPanPointerIncrement;
+		let onScreenOffsetIncrement;
 
 		if (this.onScreenOffset != 0) {
-			onScreenOffsetFromPanPointerIncrement =
-				newOnScreenOffset -
-				this.onScreenOffset;
+			onScreenOffsetIncrement =
+				newOnScreenOffset - this.onScreenOffset;
 		} else {
-			onScreenOffsetFromPanPointerIncrement = 0;
+			onScreenOffsetIncrement = 0;
 		};
+
 		this.onScreenOffset = newOnScreenOffset;
 
-		this.position.v += int(state.panDisplacement.v +
-			onScreenOffsetFromPanPointerIncrement);
+		this.position.v +=
+			int(state.panDisplacement.v + onScreenOffsetIncrement);
 
-		this.elementHeight =
-			int(this.getElementHeight(this.position.h));
 		this.elementWidth =
 			int(canvas.element.width / columnsOnScreen);
+		this.elementHeight =
+			int(this.getElementHeight(this.position.h));
 
 		for (let s in this.subnets) {
 			this.subnets[s].width = this.elementWidth;
 			this.subnets[s].height = this.elementHeight;
 
-			this.subnets[s].position.h = this.position.h -
-				this.elementWidth / 2;
-			this.subnets[s].position.v = this.position.v +
-				this.subnets[s].height * int(this.subnets[s].label);
+			this.subnets[s].position.h =
+				this.position.h - this.elementWidth / 2;
+			this.subnets[s].position.v =
+				this.position.v + this.subnets[s].height *
+				this.subnets[s].positionInColumn;
 
 			this.subnets[s].draw();
 		};
 	};
 
 	getElementHeight(horPosition) {
-		let baseElementHeight = canvas.element.height /
-			rowsInMainColumn;
-		let elementHeight = baseElementHeight *
-			this.getVertScale(horPosition);
+		let baseElementHeight =
+			canvas.element.height / rowsInMainColumn;
+		let elementHeight =
+			baseElementHeight * this.getVertScale(horPosition);
 
 		return elementHeight;
 	};
 
 	getVertScale(horPosition) {
-		let horPositionRelativeToCanvasMiddle = horPosition -
-			canvas.element.width / 2;
+		let horPositionRelativeToCanvasMiddle =
+			horPosition - canvas.element.width / 2;
 		let columnWidth = canvas.element.width / columnsOnScreen;
 		let power = -horPositionRelativeToCanvasMiddle / columnWidth;
 		/*
@@ -447,6 +448,6 @@ function render() {
 	testColumn.draw();
 };
 
-function int(number) {
-	return +(number.toFixed());
+function int(x) {
+	return +(x.toFixed());
 };
