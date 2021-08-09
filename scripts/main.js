@@ -343,6 +343,9 @@ window.addEventListener('mouseup', function (e) {
 
 	state.panning = false;
 
+	state.panDisplacement.h = 0;
+	state.panDisplacement.v = 0;
+
 	render();
 }, false);
 
