@@ -100,6 +100,9 @@ class subnet {
 	width;
 	height;
 	color = "rgba(200, 0, 0, 0.5)";
+	positionInColumn;
+	IP;
+	mask;
 	label;
 
 	constructor() { };
@@ -121,6 +124,8 @@ class subnet {
 			this.height
 		);
 
+		this.getLabelFromIPAndMask();
+
 		canvas.context.fillStyle = "rgba(0, 0, 0, 1)";
 
 		let fontSize = canvas.element.height / 60;
@@ -132,6 +137,19 @@ class subnet {
 			this.position.h + fontSize / 2,
 			this.position.v + fontSize,
 		);
+	};
+
+	getLabelFromIPAndMask() {
+		let octet1 =
+			Math.floor(this.IP / 256 ** 3);
+		let octet2 =
+			Math.floor((this.IP % 256 ** 3) / 256 ** 2);
+		let octet3 =
+			Math.floor((this.IP % 256 ** 3) % 256 ** 2 / 256);
+		let octet4 =
+			Math.floor((this.IP % 256 ** 3) % 256 ** 2 % 256);
+		this.label =
+			`${octet1}.${octet2}.${octet3}.${octet4} / ${this.mask}`
 	};
 };
 
@@ -238,10 +256,21 @@ class column {
 		let newSubnet = new subnet();
 
 		if (this.subnets.length != 0) {
-			newSubnet.label =
-				+(this.subnets[this.subnets.length - 1].label) + 1;
+			let last = this.subnets.length - 1;
+
+			newSubnet.positionInColumn =
+				+(this.subnets[last].positionInColumn) + 1;
+
+			newSubnet.IP =
+				+(this.subnets[last].IP) +
+				(2 ** 32 / 2 ** this.subnets[last].mask);
+
+			newSubnet.mask = this.subnets[last].mask;
 		} else {
-			newSubnet.label = 0;
+			newSubnet.positionInColumn = 0;
+
+			newSubnet.IP = 3232235520;
+			newSubnet.mask = 24;
 		};
 
 		this.subnets.push(newSubnet);
@@ -251,9 +280,18 @@ class column {
 		let newSubnet = new subnet();
 
 		if (this.subnets.length != 0) {
-			newSubnet.label = +(this.subnets[0].label) - 1;
+			newSubnet.positionInColumn =
+				+(this.subnets[0].positionInColumn) - 1;
+
+			newSubnet.IP =
+				+(this.subnets[0].IP) -
+				(2 ** 32 / 2 ** this.subnets[0].mask);
+
+			newSubnet.mask = this.subnets[0].mask;
 		} else {
-			newSubnet.label = 0;
+			newSubnet.positionInColumn = 0;
+			newSubnet.IP = 3232235520;
+			newSubnet.mask = 24;
 		};
 
 		this.subnets.unshift(newSubnet);
