@@ -178,7 +178,7 @@ class column {
 	constructor() { };
 
 	draw() {
-		this.position.h += int(state.panDisplacement.h);
+		this.position.h += state.panDisplacement.h;
 
 		if (state.panning) {
 			if (this.relativeOffset == 0) {
@@ -207,12 +207,12 @@ class column {
 		this.onScreenOffset = newOnScreenOffset;
 
 		this.position.v +=
-			int(state.panDisplacement.v + onScreenOffsetIncrement);
+			state.panDisplacement.v + onScreenOffsetIncrement;
 
 		this.elementWidth =
-			int(canvas.element.width / columnsOnScreen);
+			canvas.element.width / columnsOnScreen;
 		this.elementHeight =
-			int(this.getElementHeight(this.position.h));
+			this.getElementHeight(this.position.h);
 
 		for (let s in this.subnets) {
 			this.subnets[s].width = this.elementWidth;
