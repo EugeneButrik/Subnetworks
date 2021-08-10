@@ -134,8 +134,8 @@ class subnet {
 
 		canvas.context.fillText(
 			this.label,
-			this.position.h + fontSize / 2,
-			this.position.v + fontSize,
+			this.position.h + fontSize * 0.75,
+			this.position.v + fontSize * 1.5,
 		);
 	};
 

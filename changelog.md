@@ -1,2 +1,1 @@
-Reworked the subnets labeling.
-The subnets labels now represent their IP-addresses.
+Changed the subnet label position.
