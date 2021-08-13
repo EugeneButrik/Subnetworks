@@ -8,11 +8,15 @@ window.addEventListener('resize', function (e) {
 	main.render()
 }, false)
 
+
+
 window.addEventListener('contextmenu', function (e) {
 	e.preventDefault()
 
 	main.render()
 }, false)
+
+
 
 window.addEventListener('keydown', function (e) {
 	if (e.code == `ArrowUp`) {
@@ -38,6 +42,8 @@ window.addEventListener('keydown', function (e) {
 	main.render()
 }, false)
 
+
+
 window.addEventListener('keyup', function (e) {
 	main.state.panning = false
 	main.state.panDisplacement.h = 0
@@ -46,6 +52,8 @@ window.addEventListener('keyup', function (e) {
 	main.render()
 }, false)
 
+
+
 window.addEventListener('mousedown', function (e) {
 	e.preventDefault()
 
@@ -53,6 +61,8 @@ window.addEventListener('mousedown', function (e) {
 
 	main.render()
 }, false)
+
+
 
 window.addEventListener('mouseup', function (e) {
 	e.preventDefault()
@@ -64,6 +74,8 @@ window.addEventListener('mouseup', function (e) {
 
 	main.render()
 }, false)
+
+
 
 window.addEventListener('mousemove', function (e) {
 	e.preventDefault()
@@ -90,9 +102,11 @@ window.addEventListener('mousemove', function (e) {
 	main.render()
 }, false)
 
+
+
 main.canvas.element.addEventListener('wheel', function (e) {
 	/*
-	This event listener can not to be added to window because in that
+	This event listener can not be added to window because in that
 	case it is "Unable to preventDefault inside passive event listener
 	due to target being treated as passive" (Google Chrome).
 	So preventDefault() method can't be called and browser can handle
@@ -120,6 +134,8 @@ main.canvas.element.addEventListener('wheel', function (e) {
 	main.render()
 }, false)
 
+
+
 main.canvas.element.addEventListener('touchstart', function (e) {
 	e.preventDefault()
 
@@ -131,6 +147,8 @@ main.canvas.element.addEventListener('touchstart', function (e) {
 	main.render()
 }, true)
 
+
+
 main.canvas.element.addEventListener('touchend', function (e) {
 	e.preventDefault()
 
@@ -139,13 +157,15 @@ main.canvas.element.addEventListener('touchend', function (e) {
 	main.render()
 }, false)
 
+
+
 main.canvas.element.addEventListener('touchmove', function (e) {
 	e.preventDefault()
 
 	main.state.panDisplacement.h =
-	main.int(e.touches[0].clientX) - main.state.pointerPosition.h
+		main.int(e.touches[0].clientX) - main.state.pointerPosition.h
 	main.state.panDisplacement.v =
-	main.int(e.touches[0].clientY) - main.state.pointerPosition.v
+		main.int(e.touches[0].clientY) - main.state.pointerPosition.v
 
 	main.state.pointerPosition.h = main.int(e.touches[0].clientX)
 	main.state.pointerPosition.v = main.int(e.touches[0].clientY)

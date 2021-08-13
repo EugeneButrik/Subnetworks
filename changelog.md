@@ -1,5 +1,4 @@
-Added sketch.
-Added AutoCAD drawing file for sketching.
+Minor code refactoring.
 
 
 
