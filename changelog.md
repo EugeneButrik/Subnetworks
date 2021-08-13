@@ -1,5 +1,6 @@
 Code refactoring.
-Removed all semicolons.
+Event listeners and two classes (column and subnet) moved to separate
+files.
 
 
 
