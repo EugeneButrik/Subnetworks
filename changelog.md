@@ -1,6 +1,5 @@
-Code refactoring.
-Event listeners and two classes (column and subnet) moved to separate
-files.
+Added sketch.
+Added AutoCAD drawing file for sketching.
 
 
 
