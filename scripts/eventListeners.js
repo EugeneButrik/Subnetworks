@@ -39,6 +39,8 @@ window.addEventListener('keydown', function (e) {
 		main.state.panDisplacement.h = -1
 	}
 
+	main.changeFocusPosition()
+
 	main.render()
 }, false)
 
@@ -96,6 +98,8 @@ window.addEventListener('mousemove', function (e) {
 		main.state.panDisplacement.v = 0
 	}
 
+	main.changeFocusPosition()
+
 	main.state.pointerPosition.h = e.clientX
 	main.state.pointerPosition.v = e.clientY
 
@@ -115,21 +119,15 @@ main.canvas.element.addEventListener('wheel', function (e) {
 
 	e.preventDefault()
 
-	if (e.deltaY < 0 && !e.altKey) {
-		main.testColumn.cutBottom()
+	if (e.deltaY < 0) {
+		main.state.focus.v -= main.testTable.baseSubnet.size
 	}
 
-	if (e.deltaY > 0 && !e.altKey) {
-		main.testColumn.appendBottom()
+	if (e.deltaY > 0) {
+		main.state.focus.v += main.testTable.baseSubnet.size
 	}
 
-	if (e.deltaY < 0 && e.altKey) {
-		main.testColumn.appendTop()
-	}
-
-	if (e.deltaY > 0 && e.altKey) {
-		main.testColumn.cutTop()
-	}
+	main.checkFocusBoundaries()
 
 	main.render()
 }, false)

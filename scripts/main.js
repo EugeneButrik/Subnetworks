@@ -1,6 +1,6 @@
-`use strict`
+import table from "./table.js"
 
-import column from "./column.js"
+
 
 export let canvas = {
 	element: document.getElementById("canvas"),
@@ -32,6 +32,11 @@ export let state = {
 	panDisplacement: {
 		h: 0,
 		v: 0,
+	},
+
+	focus: {
+		h: 24.5,
+		v: 3232235648,
 	},
 }
 
@@ -71,6 +76,13 @@ export let infoPanel = {
 			`Pan displacement:          ` +
 			`[${state.panDisplacement.h}, ` +
 			`${state.panDisplacement.v}]`,
+
+			`Focus:                     ` +
+			`[${state.focus.h}, ` +
+			`${state.focus.v}]`,
+
+			`baseSubnet:                ` +
+			`${testTable.baseSubnet.label}`,
 		]
 
 		for (let s in panelStrings) {
@@ -91,19 +103,14 @@ export let infoPanel = {
 	},
 }
 
+export const columnsOnScreen = 5
+export const subnetsInMidColumn = 10
+
 
 
 canvas.resize()
 
-export let testColumn = new column()
-
-testColumn.position.h = canvas.element.width / 2
-testColumn.position.v = canvas.element.height / 2
-
-testColumn.appendBottom()
-testColumn.appendBottom()
-testColumn.appendTop()
-testColumn.appendTop()
+export let testTable = new table()
 
 render()
 
@@ -112,9 +119,43 @@ render()
 export function render() {
 	canvas.clear()
 
-	infoPanel.draw()
+	testTable.draw()
 
-	testColumn.draw()
+	infoPanel.draw()
+}
+
+export function changeFocusPosition() {
+	let horSensitivity =
+		1 / (canvas.element.width / columnsOnScreen)
+
+	let verSensitivity =
+		testTable.baseSubnet.size /
+		(canvas.element.height / subnetsInMidColumn)
+
+	state.focus.h -= state.panDisplacement.h * horSensitivity
+	state.focus.v -= state.panDisplacement.v * verSensitivity
+
+	checkFocusBoundaries()
+}
+
+export function checkFocusBoundaries() {
+	const min = 0.001
+
+	if (state.focus.h < min) {
+		state.focus.h = min
+	}
+
+	if (state.focus.h > 33 - min) {
+		state.focus.h = 33 - min
+	}
+
+	if (state.focus.v < min) {
+		state.focus.v = min
+	}
+
+	if (state.focus.v > 2 ** 32 - min) {
+		state.focus.v = 2 ** 32 - min
+	}
 }
 
 export function int(x) {

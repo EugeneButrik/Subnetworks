@@ -10,17 +10,39 @@ export default class subnet {
 
     width
     height
-    color = "rgba(200, 0, 0, 0.5)"
-    positionInColumn
-    IP
     mask
+    IP
+    size
     label
 
     constructor() {
     }
 
     draw() {
-        main.canvas.context.fillStyle = this.color
+        let subnetOnTableHorOffset =
+            main.state.focus.h - this.mask
+
+        let subnetOnTableVerOffset =
+            main.state.focus.v - this.IP
+
+        this.width =
+            main.canvas.element.width / main.columnsOnScreen
+
+        let verScale = 1 / 2 ** -subnetOnTableHorOffset
+
+        this.height =
+            main.canvas.element.height * verScale /
+            main.subnetsInMidColumn
+
+        this.position.h =
+            main.canvas.element.width / 2 -
+            subnetOnTableHorOffset * this.width
+
+        this.position.v =
+            main.canvas.element.height / 2 -
+            (subnetOnTableVerOffset / this.size) * this.height
+
+        main.canvas.context.fillStyle = "rgba(200, 0, 0, 0.5)"
 
         main.canvas.context.strokeRect(
             this.position.h,
@@ -62,5 +84,17 @@ export default class subnet {
             Math.floor((this.IP % 256 ** 3) % 256 ** 2 % 256)
         this.label =
             `${octet1}.${octet2}.${octet3}.${octet4} / ${this.mask}`
+
+        return this.label
+    }
+
+    getMaskSizeAndIPFromOnTablePos(onTablePosition) {
+        this.mask = Math.floor(onTablePosition.h)
+
+        this.size = 2 ** (32 - this.mask)
+
+        this.IP =
+            Math.floor(onTablePosition.v) -
+            Math.floor(onTablePosition.v) % this.size
     }
 }
