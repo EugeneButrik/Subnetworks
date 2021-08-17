@@ -11,11 +11,11 @@ export default class table {
 	}
 
 	draw() {
-		this.baseSubnet.getLabelFromIPAndMask()
-
 		this.baseSubnet.getMaskSizeAndIPFromOnTablePos(
 			main.state.focus
 		)
+
+		this.baseSubnet.getLabelFromIPAndMask()
 
 		const theSmallestBaseSubnet =
 			this.getSmallerSubnet(
@@ -26,7 +26,7 @@ export default class table {
 		let ancestors = []
 
 		const ancestorNumber =
-		Math.round(
+			Math.round(
 				main.subnetsInMidColumn /
 				2 ** (main.columnsOnScreen / 2)
 			)

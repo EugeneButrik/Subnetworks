@@ -76,7 +76,7 @@ export let infoPanel = {
 		canvas.context.fillStyle = "rgba(0, 0, 0, 1)"
 		const fontSize = canvas.percent(1.5)
 		canvas.context.font = `${fontSize}px courier`
-		
+
 		const currentMoment = Date.now()
 		const timeShift = currentMoment - this.timeStamp
 		const FPS = Math.round(1000 / timeShift)
@@ -100,7 +100,7 @@ export let infoPanel = {
 
 			`baseSubnet:                ` +
 			`${testTable.baseSubnet.label}`,
-			
+
 			`FPS:                       ` +
 			`${FPS}`,
 		]
@@ -146,7 +146,7 @@ export function render() {
 	infoPanel.draw()
 }
 
-function aligning() {
+export function aligning() {
 	if (!state.panning) {
 
 		const targetHorPosition =

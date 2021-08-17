@@ -1,1 +1,1 @@
-Added animation of aligning focus to the center of the subnet.
+Minor code refactoring.
