@@ -134,6 +134,8 @@ export let testTable = new table()
 
 render()
 
+window.requestAnimationFrame(aligning)
+
 
 
 export function render() {
@@ -142,6 +144,28 @@ export function render() {
 	testTable.draw()
 
 	infoPanel.draw()
+}
+
+function aligning() {
+	if (!state.panning) {
+
+		const targetHorPosition =
+			testTable.baseSubnet.mask + 0.5
+		const targetVerPosition =
+			testTable.baseSubnet.IP + testTable.baseSubnet.size / 2
+
+		const horOffset = targetHorPosition - state.focus.h
+		const verOffset = targetVerPosition - state.focus.v
+
+		state.focus.h += +((horOffset / 10).toFixed(3))
+		state.focus.v += +((verOffset / 10).toFixed(3))
+
+		checkFocusBoundaries()
+
+		render()
+	}
+
+	window.requestAnimationFrame(aligning)
 }
 
 export function changeFocusPosition() {

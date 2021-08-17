@@ -120,11 +120,11 @@ main.canvas.element.addEventListener('wheel', function (e) {
 	e.preventDefault()
 
 	if (e.deltaY < 0) {
-		main.state.focus.v -= main.testTable.baseSubnet.size
+		main.state.focus.v -= main.testTable.baseSubnet.size * 0.95
 	}
 
 	if (e.deltaY > 0) {
-		main.state.focus.v += main.testTable.baseSubnet.size
+		main.state.focus.v += main.testTable.baseSubnet.size * 0.95
 	}
 
 	main.checkFocusBoundaries()

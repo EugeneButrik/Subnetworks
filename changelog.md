@@ -1,1 +1,1 @@
-FPS counter added.
+Added animation of aligning focus to the center of the subnet.
