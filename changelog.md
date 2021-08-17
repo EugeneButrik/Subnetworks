@@ -1,1 +1,1 @@
-Minor code refactoring.
+Fixed a bug related to the lack of touch screen support.

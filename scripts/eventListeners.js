@@ -167,6 +167,8 @@ main.canvas.element.addEventListener('touchmove', function (e) {
 		Math.round(e.touches[0].clientY) -
 		main.state.pointerPosition.v
 
+	main.changeFocusPosition()
+
 	main.state.pointerPosition.h = Math.round(e.touches[0].clientX)
 	main.state.pointerPosition.v = Math.round(e.touches[0].clientY)
 
