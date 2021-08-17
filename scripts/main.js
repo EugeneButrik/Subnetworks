@@ -19,6 +19,15 @@ export let canvas = {
 			this.element.height
 		)
 	},
+
+	percent: function (n) {
+		const canvasSize =
+			Math.sqrt(this.element.width * this.element.height)
+
+		const percent = (canvasSize / 100) * n
+
+		return percent
+	}
 }
 
 export let state = {
@@ -63,7 +72,7 @@ export let infoPanel = {
 
 	draw: function () {
 		canvas.context.fillStyle = "rgba(0, 0, 0, 1)"
-		let fontSize = canvas.element.height / 60
+		const fontSize = canvas.percent(1.5)
 		canvas.context.font = `${fontSize}px courier`
 
 		let panelStrings = [
@@ -156,8 +165,4 @@ export function checkFocusBoundaries() {
 	if (state.focus.v > 2 ** 32 - min) {
 		state.focus.v = 2 ** 32 - min
 	}
-}
-
-export function int(x) {
-	return +(x.toFixed())
 }

@@ -20,13 +20,13 @@ export default class table {
 		const theSmallestBaseSubnet =
 			this.getSmallerSubnet(
 				this.baseSubnet,
-				main.int(main.subnetsInMidColumn / 2)
+				Math.round(main.subnetsInMidColumn / 2)
 			)
 
 		let ancestors = []
 
 		const ancestorNumber =
-		main.int(
+		Math.round(
 				main.subnetsInMidColumn /
 				2 ** (main.columnsOnScreen / 2)
 			)
@@ -34,7 +34,7 @@ export default class table {
 		const theSmallestBaseSubnetAncestor =
 			this.getParentSubnet(
 				theSmallestBaseSubnet,
-				main.int(main.columnsOnScreen / 2)
+				Math.round(main.columnsOnScreen / 2)
 			)
 
 		ancestors.push(theSmallestBaseSubnetAncestor)

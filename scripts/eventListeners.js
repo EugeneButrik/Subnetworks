@@ -161,12 +161,14 @@ main.canvas.element.addEventListener('touchmove', function (e) {
 	e.preventDefault()
 
 	main.state.panDisplacement.h =
-		main.int(e.touches[0].clientX) - main.state.pointerPosition.h
+		Math.round(e.touches[0].clientX) -
+		main.state.pointerPosition.h
 	main.state.panDisplacement.v =
-		main.int(e.touches[0].clientY) - main.state.pointerPosition.v
+		Math.round(e.touches[0].clientY) -
+		main.state.pointerPosition.v
 
-	main.state.pointerPosition.h = main.int(e.touches[0].clientX)
-	main.state.pointerPosition.v = main.int(e.touches[0].clientY)
+	main.state.pointerPosition.h = Math.round(e.touches[0].clientX)
+	main.state.pointerPosition.v = Math.round(e.touches[0].clientY)
 
 	main.render()
 }, false)
