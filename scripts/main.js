@@ -55,6 +55,8 @@ export let infoPanel = {
 	repeated: 1,
 	logMaxStrings: 5,
 
+	timeStamp: Date.now(),
+
 	log: function (s) {
 		if (s == this.logLastMessage) {
 			this.logStrings[0] = `|${++this.repeated}| ` + s
@@ -74,6 +76,12 @@ export let infoPanel = {
 		canvas.context.fillStyle = "rgba(0, 0, 0, 1)"
 		const fontSize = canvas.percent(1.5)
 		canvas.context.font = `${fontSize}px courier`
+		
+		const currentMoment = Date.now()
+		const timeShift = currentMoment - this.timeStamp
+		const FPS = Math.round(1000 / timeShift)
+
+		this.timeStamp = currentMoment
 
 		let panelStrings = [
 			`${state.panning ? "Panning" : "Not panning"}`,
@@ -92,6 +100,9 @@ export let infoPanel = {
 
 			`baseSubnet:                ` +
 			`${testTable.baseSubnet.label}`,
+			
+			`FPS:                       ` +
+			`${FPS}`,
 		]
 
 		for (let s in panelStrings) {
