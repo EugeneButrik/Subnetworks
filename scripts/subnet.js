@@ -28,7 +28,7 @@ export default class subnet {
         this.width =
             main.canvas.element.width / main.columnsOnScreen
 
-        let verScale = 1 / 2 ** -subnetOnTableHorOffset
+        let verScale = 1 / 2 ** -(subnetOnTableHorOffset - 0.5)
 
         this.height =
             main.canvas.element.height * verScale /
