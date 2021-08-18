@@ -1,1 +1,1 @@
-Reworked aligning function.
+Fixed bug related to the insufficient subnets in a table.

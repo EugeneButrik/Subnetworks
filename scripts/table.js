@@ -17,18 +17,19 @@ export default class table {
 
 		this.baseSubnet.getLabelFromIPAndMask()
 
+		const visibleSubnetsNumber = main.subnetsInMidColumn + 2
+
 		const theSmallestBaseSubnet =
 			this.getSmallerSubnet(
 				this.baseSubnet,
-				Math.round(main.subnetsInMidColumn / 2)
+				Math.round(visibleSubnetsNumber / 2)
 			)
 
 		let ancestors = []
 
 		const ancestorNumber =
-			Math.round(
-				main.subnetsInMidColumn /
-				2 ** (main.columnsOnScreen / 2)
+			Math.ceil(
+				visibleSubnetsNumber / 2 ** (main.columnsOnScreen / 2)
 			)
 
 		const theSmallestBaseSubnetAncestor =

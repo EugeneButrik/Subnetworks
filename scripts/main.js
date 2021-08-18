@@ -118,7 +118,7 @@ export let infoPanel = {
 	},
 }
 
-export const columnsOnScreen = 3
+export const columnsOnScreen = 5
 export const subnetsInMidColumn = 5
 
 
