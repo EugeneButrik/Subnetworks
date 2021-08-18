@@ -1,1 +1,1 @@
-Fixed a bug related to the lack of touch screen support.
+Corrected a panning displacement calculation.

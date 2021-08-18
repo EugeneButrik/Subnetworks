@@ -176,8 +176,8 @@ export function changeFocusPosition() {
 		testTable.baseSubnet.size /
 		(canvas.element.height / subnetsInMidColumn)
 
-	state.focus.h -= state.panDisplacement.h * horSensitivity
-	state.focus.v -= state.panDisplacement.v * verSensitivity
+	state.focus.h += state.panDisplacement.h * horSensitivity
+	state.focus.v += state.panDisplacement.v * verSensitivity
 
 	checkFocusBoundaries()
 }

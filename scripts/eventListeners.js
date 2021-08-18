@@ -90,9 +90,9 @@ window.addEventListener('mousemove', function (e) {
 
 	if (main.state.panning) {
 		main.state.panDisplacement.h =
-			e.clientX - main.state.pointerPosition.h
+			main.state.pointerPosition.h - e.clientX
 		main.state.panDisplacement.v =
-			e.clientY - main.state.pointerPosition.v
+			main.state.pointerPosition.v - e.clientY
 	} else {
 		main.state.panDisplacement.h = 0
 		main.state.panDisplacement.v = 0
@@ -161,11 +161,12 @@ main.canvas.element.addEventListener('touchmove', function (e) {
 	e.preventDefault()
 
 	main.state.panDisplacement.h =
-		Math.round(e.touches[0].clientX) -
-		main.state.pointerPosition.h
+		main.state.pointerPosition.h -
+		Math.round(e.touches[0].clientX)
+
 	main.state.panDisplacement.v =
-		Math.round(e.touches[0].clientY) -
-		main.state.pointerPosition.v
+		main.state.pointerPosition.v -
+		Math.round(e.touches[0].clientY)
 
 	main.changeFocusPosition()
 
