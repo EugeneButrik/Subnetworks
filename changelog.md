@@ -1,1 +1,1 @@
-Corrected subnet on-screen height calculation.
+Reworked aligning function.

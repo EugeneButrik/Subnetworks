@@ -152,8 +152,17 @@ export function aligning() {
 		const horOffset = targetHorPosition - state.focus.h
 		const verOffset = targetVerPosition - state.focus.v
 
-		state.focus.h += +((horOffset / 10).toFixed(3))
-		state.focus.v += +((verOffset / 10).toFixed(3))
+		if (Math.abs(horOffset) >= 0.001) {
+			state.focus.h += horOffset / 10
+		} else {
+			state.focus.h = targetHorPosition
+		}
+
+		if (Math.abs(verOffset) >= 0.001) {
+			state.focus.v += verOffset / 10
+		} else {
+			state.focus.v = targetVerPosition
+		}
 
 		checkFocusBoundaries()
 
