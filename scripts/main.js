@@ -20,13 +20,8 @@ export let canvas = {
 		)
 	},
 
-	percent: function (n) {
-		const canvasSize =
-			Math.sqrt(this.element.width * this.element.height)
-
-		const percent = (canvasSize / 100) * n
-
-		return percent
+	heightPercent: function (n) {
+		return (this.element.height / 100) * n
 	}
 }
 
@@ -74,8 +69,8 @@ export let infoPanel = {
 
 	draw: function () {
 		canvas.context.fillStyle = "rgba(0, 0, 0, 1)"
-		const fontSize = canvas.percent(1.5)
-		canvas.context.font = `${fontSize}px courier`
+		const fontSize = canvas.heightPercent(2)
+		canvas.context.font = `${fontSize}px arial`
 
 		const currentMoment = Date.now()
 		const timeShift = currentMoment - this.timeStamp
@@ -86,22 +81,22 @@ export let infoPanel = {
 		let panelStrings = [
 			`${state.panning ? "Panning" : "Not panning"}`,
 
-			`Pointer on-screen position:` +
+			`Pointer on-screen position: ` +
 			`[${state.pointerPosition.h}, ` +
 			`${state.pointerPosition.v}]`,
 
-			`Pan displacement:          ` +
+			`Pan displacement: ` +
 			`[${state.panDisplacement.h}, ` +
 			`${state.panDisplacement.v}]`,
 
-			`Focus:                     ` +
+			`Focus: ` +
 			`[${state.focus.h}, ` +
 			`${state.focus.v}]`,
 
-			`baseSubnet:                ` +
+			`baseSubnet: ` +
 			`${testTable.baseSubnet.label}`,
 
-			`FPS:                       ` +
+			`FPS: ` +
 			`${FPS}`,
 		]
 

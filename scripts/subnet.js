@@ -61,8 +61,8 @@ export default class subnet {
         this.getLabelFromIPAndMask()
 
         main.canvas.context.fillStyle = "rgba(0, 0, 0, 1)"
-        const fontSize = main.canvas.percent(1.5)
-        main.canvas.context.font = `${fontSize}px courier`
+        const fontSize = main.canvas.heightPercent(2)
+        main.canvas.context.font = `${fontSize}px arial`
 
         main.canvas.context.fillText(
             this.label,
