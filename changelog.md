@@ -1,1 +1,1 @@
-Added focus rendering.
+Added smooth keyboard and mouse wheel navigation.

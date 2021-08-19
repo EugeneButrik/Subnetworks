@@ -46,7 +46,12 @@ export const state = {
 
 	focus: {
 		h: 24.5,
-		v: 3232235648,
+		v: 3232235648.5,
+	},
+
+	target: {
+		h: 24.5,
+		v: 3232235648.5,
 	},
 
 	drawFocus: () => {
@@ -112,6 +117,10 @@ export const infoPanel = {
 			`[${state.focus.h}, ` +
 			`${state.focus.v}]`,
 
+			`Target: ` +
+			`[${state.target.h}, ` +
+			`${state.target.v}]`,
+
 			`baseSubnet: ` +
 			`${testTable.baseSubnet.label}`,
 
@@ -161,25 +170,27 @@ export function render() {
 
 export function aligning() {
 	if (!state.panning) {
+		state.target.h =
+			Math.floor(state.target.h) + 0.5
 
-		const targetHorPosition =
-			testTable.baseSubnet.mask + 0.5
-		const targetVerPosition =
-			testTable.baseSubnet.IP + testTable.baseSubnet.size / 2
+		state.target.v =
+			Math.floor(state.target.v / testTable.baseSubnet.size) *
+			testTable.baseSubnet.size +
+			testTable.baseSubnet.size / 2.001
 
-		const horOffset = targetHorPosition - state.focus.h
-		const verOffset = targetVerPosition - state.focus.v
+		const horOffset = state.target.h - state.focus.h
+		const verOffset = state.target.v - state.focus.v
 
 		if (Math.abs(horOffset) >= 0.001) {
 			state.focus.h += horOffset / 10
 		} else {
-			state.focus.h = targetHorPosition
+			state.focus.h = state.target.h
 		}
 
 		if (Math.abs(verOffset) >= 0.001) {
 			state.focus.v += verOffset / 10
 		} else {
-			state.focus.v = targetVerPosition
+			state.focus.v = state.target.v
 		}
 
 		checkFocusBoundaries()
@@ -198,8 +209,14 @@ export function changeFocusPosition() {
 		testTable.baseSubnet.size /
 		(canvas.element.height / subnetsInMidColumn)
 
-	state.focus.h += state.panDisplacement.h * horSensitivity
-	state.focus.v += state.panDisplacement.v * verSensitivity
+	const horIncrement = state.panDisplacement.h * horSensitivity
+	const verIncrement = state.panDisplacement.v * verSensitivity
+
+	state.focus.h += horIncrement
+	state.focus.v += verIncrement
+
+	state.target.h += horIncrement
+	state.target.v += verIncrement
 
 	checkFocusBoundaries()
 }
@@ -221,5 +238,21 @@ export function checkFocusBoundaries() {
 
 	if (state.focus.v > 2 ** 32 - min) {
 		state.focus.v = 2 ** 32 - min
+	}
+
+	if (state.target.h < 0.5) {
+		state.target.h = 0.5
+	}
+
+	if (state.target.h > 33 - 0.5) {
+		state.target.h = 33 - 0.5
+	}
+
+	if (state.target.v < 0.5) {
+		state.target.v = 0.5
+	}
+
+	if (state.target.v > 2 ** 32 - 0.5) {
+		state.target.v = 2 ** 32 - 0.5
 	}
 }

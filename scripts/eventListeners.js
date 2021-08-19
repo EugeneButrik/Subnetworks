@@ -20,23 +20,19 @@ window.addEventListener('contextmenu', function (e) {
 
 window.addEventListener('keydown', function (e) {
 	if (e.code == `ArrowUp`) {
-		main.state.panning = true
-		main.state.panDisplacement.v = -1
+		main.state.target.v -= main.testTable.baseSubnet.size
 	}
 
 	if (e.code == `ArrowDown`) {
-		main.state.panning = true
-		main.state.panDisplacement.v = 1
+		main.state.target.v += main.testTable.baseSubnet.size
 	}
 
 	if (e.code == `ArrowRight`) {
-		main.state.panning = true
-		main.state.panDisplacement.h = 1
+		main.state.target.h += 1
 	}
 
 	if (e.code == `ArrowLeft`) {
-		main.state.panning = true
-		main.state.panDisplacement.h = -1
+		main.state.target.h -= 1
 	}
 
 	main.changeFocusPosition()
@@ -48,8 +44,6 @@ window.addEventListener('keydown', function (e) {
 
 window.addEventListener('keyup', function (e) {
 	main.state.panning = false
-	main.state.panDisplacement.h = 0
-	main.state.panDisplacement.v = 0
 
 	main.render()
 }, false)
@@ -120,11 +114,11 @@ main.canvas.element.addEventListener('wheel', function (e) {
 	e.preventDefault()
 
 	if (e.deltaY < 0) {
-		main.state.focus.v -= main.testTable.baseSubnet.size * 0.95
+		main.state.target.v -= main.testTable.baseSubnet.size
 	}
 
 	if (e.deltaY > 0) {
-		main.state.focus.v += main.testTable.baseSubnet.size * 0.95
+		main.state.target.v += main.testTable.baseSubnet.size
 	}
 
 	main.checkFocusBoundaries()
@@ -151,6 +145,9 @@ main.canvas.element.addEventListener('touchend', function (e) {
 	e.preventDefault()
 
 	main.state.panning = false
+
+	main.state.panDisplacement.h = 0
+	main.state.panDisplacement.v = 0
 
 	main.render()
 }, false)
