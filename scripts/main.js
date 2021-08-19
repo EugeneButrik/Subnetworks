@@ -48,6 +48,19 @@ export const state = {
 		h: 24.5,
 		v: 3232235648,
 	},
+
+	drawFocus: () => {
+		canvas.context.fillStyle = "rgba(0, 0, 255, 0.5)"
+		canvas.context.beginPath();
+		canvas.context.arc(
+			canvas.element.width / 2,
+			canvas.element.height / 2,
+			canvas.heightPercent(0.3),
+			0,
+			2 * Math.PI
+		);
+		canvas.context.fill();
+	},
 }
 
 export const infoPanel = {
@@ -142,6 +155,8 @@ export function render() {
 	testTable.draw()
 
 	infoPanel.draw()
+
+	state.drawFocus()
 }
 
 export function aligning() {
