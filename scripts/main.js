@@ -2,13 +2,19 @@ import table from "./table.js"
 
 
 
-export let canvas = {
+export let columnsOnScreen
+export let subnetsInMidColumn
+
+export const canvas = {
 	element: document.getElementById("canvas"),
 	context: document.getElementById("canvas").getContext("2d"),
 
 	resize: function () {
 		this.element.width = window.innerWidth
 		this.element.height = window.innerHeight
+
+		columnsOnScreen = Math.round(this.element.width / 390)
+		subnetsInMidColumn = Math.round(this.element.height / 200)
 	},
 
 	clear: function () {
@@ -25,7 +31,7 @@ export let canvas = {
 	}
 }
 
-export let state = {
+export const state = {
 	panning: false,
 
 	pointerPosition: {
@@ -44,7 +50,7 @@ export let state = {
 	},
 }
 
-export let infoPanel = {
+export const infoPanel = {
 	logStrings: [],
 	logLastMessage: undefined,
 	repeated: 1,
@@ -117,9 +123,6 @@ export let infoPanel = {
 		}
 	},
 }
-
-export const columnsOnScreen = 5
-export const subnetsInMidColumn = 5
 
 
 
